@@ -38,15 +38,15 @@ int main() {
 	int temp[COLUMN+1] = {};
 	int teta = 29; //порог
 	
-	//cout << "Введите Тету: "; cin >> teta; cout << endl; //ввод порога 
+	cout << "Введите Тету: "; cin >> teta; cout << endl; //ввод порога 
 
 	int weight = 0;
-	int omega[COLUMN + 1] = { 0,2,4,1,9,6,6,-3,-6,0,2,5,4,3,7,0 }; //омега
+	int omega[COLUMN + 1] = { 0,1,4,5,2,10,6,7,-2,-11,1,3,5,5,4,8 }; //омега
 	cout << "Исходная омега: | ";
 	for (int i = 1; i < COLUMN+1; i++) {
 		cout << omega[i] << " | ";
 	}cout << endl;
-	
+	cout << endl;
 	int err = 0;
 	int prev_err = 0;
 	vector <int> errors = {};
@@ -75,6 +75,8 @@ int main() {
 
 	for (int pth_point = 0; pth_point < COLUMN + 1; pth_point++) {
 		
+		//int omega[COLUMN + 1] = { 0,2,4,1,9,6,6,-3,-6,0,2,5,4,3,7,0 };
+
 		fstream file(path[pth_point]);
 
 		if (file.is_open()) {
@@ -91,6 +93,7 @@ int main() {
 	
 	start:
 		prev_err = err;
+		err = 0;
 		for (int point = 0; point < LINE; point++) {
 			for (int i = 1; i < COLUMN+1; i++) {
 				weight += omega[i] * main_selection[point][i];
@@ -100,16 +103,21 @@ int main() {
 			else if (main_selection[point][0] == 0 and weight <= teta) { ADD(omega, temp); flag_zero = false; }
 			else if (main_selection[point][0] != 0 and weight > teta) { SUB(omega, temp); flag_zero = false; }
 			weight = 0;
-			if (main_selection[point][0] == 0 and flag_zero == false) { err++; }
+		if (main_selection[point][0] == 0 and flag_zero == false) { err++; }
 		};
-		if (flag_zero == true) { err = 0; }
-		if (err < prev_err) { goto start; }
+		//if (flag_zero == true) { err = 0; }
+		if ((err - prev_err < 0) or (prev_err - err < 0)) { cout << "restart" << endl; goto start; }
+		cout << "Err = " << err << endl;
 		errors.push_back(err);
-	}
 
+		for (int i = 0; i < COLUMN; i++) {
+			cout << omega[i] << " ";
+		}cout << endl;
+	}
+/*
 	for (int i = 0; i < errors.size(); i++) {
 		cout << "Кол - во помех: " << i << ", процент ошибки: " << errors[i] << endl;
-	}
+	}*/
 
 }
 	
